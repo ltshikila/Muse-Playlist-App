@@ -1,0 +1,62 @@
+/* AddPlaylist.css */
+.add-playlist-page {
+    padding: 20px;
+    text-align: center;
+    max-width: 500px;
+    margin: 50px auto;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 50px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .add-playlist-page h2 {
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .add-playlist-page form {
+    display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  }
+  
+  .add-playlist-page input[type="text"],
+  .add-playlist-page textarea,
+  .add-playlist-page input[type="file"] {
+    margin: 10px 0;
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 30px;
+  width: 80%;
+  background-color: white;
+  }
+  
+  .add-playlist-page textarea {
+    resize: vertical;
+    height: 100px;
+  }
+  
+  .add-playlist-page button {
+    padding: 12px;
+  margin: 50px;
+  font-size: 1.5rem;
+  background-color: #000000;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  width: 50%;
+  }
+  
+  .add-playlist-page button:hover {
+    background-color: #171717;
+  }
+  
+  label {
+    text-align: left;
+    width: 80%;
+    font-size: 1rem;
+    font-weight: 400;
+}

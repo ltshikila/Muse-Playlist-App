@@ -1,0 +1,57 @@
+/* AddSong.css */
+.add-song-page {
+    padding: 20px;
+    text-align: center;
+    max-width: 500px;
+    margin: 50px auto;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 50px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.add-song-page h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.add-song-page form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.add-song-page input[type="text"],
+.add-song-page input[type="number"],
+.add-song-page input[type="file"] {
+    margin: 10px 0;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+    width: 80%;
+    background-color: white;
+}
+
+.add-song-page button {
+    padding: 12px;
+    margin: 50px;
+    font-size: 1.5rem;
+    background-color: #000000;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    width: 50%;
+}
+
+.add-song-page button:hover {
+    background-color: #171717;
+}
+
+label {
+    text-align: left;
+    width: 80%;
+    font-size: 1rem;
+    font-weight: 400;
+}

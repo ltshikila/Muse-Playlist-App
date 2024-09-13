@@ -1,0 +1,10 @@
+.playlist-item {
+    width: 150px;
+    text-align: left;
+    padding-left: 10px;
+}
+
+.playlist-cover {
+    width: 100%;
+    height: auto;
+}
