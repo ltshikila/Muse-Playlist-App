@@ -1,54 +1,72 @@
 // Playlist.jsx
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom'; 
+import { Link, withRouter } from 'react-router-dom'; 
 import { useParams } from 'react-router-dom';
 import Header from '../components/header';
 import Song from '../components/song';
 import Comment from '../components/comment';
 import './playlist.css';
-import playlistCover from '../../public/assets/images/coverarts/playlistone.jpg';
-import pfpone from '../../public/assets/images/pfpone.jpg';
-import pfptwo from '../../public/assets/images/pfptwo.jpg';
-import starboy from '../../public/assets/images/coverarts/starboy.png';
-import bornsinner from '../../public/assets/images/coverarts/bornsinner.jpg';
 import add from '../../public/assets/images/add.png';
 
 class Playlist extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      playlistCover: playlistCover,
-      playlistName: "Playlist Name",
-      creatorName: "Username",
-      genre: "Pop",
-      description: "Yo this is my first playlist guys I hope u enjoy it!!!!!",
-      hashtags: "#POP, #NEW, #RIHANNA, #ANTI, #BEYONCE",
-      songs: [
-        { coverImage: starboy, songName: 'Starboy', artist: 'The Weeknd', album: 'Starboy', year: '2016', addedBy: 'Goku', length: '3:50', dateAdded: '50min ago' },
-        { coverImage: bornsinner, songName: 'Trouble', artist: 'J.Cole', album: 'Born Sinner(Deluxe)', year: '2013', addedBy: 'Goku', length: '4:18', dateAdded: '1hr ago' },
-      ],
-      comments: [
-        { profileImage: pfpone, username: 'KimK', comment: 'YO BRO I DONT LIKE THIS PLAYLIST!!' },
-        { profileImage: pfptwo, username: 'Mona Lisa', comment: 'Nice collection, keep it up!' },
-      ]
+      coverart: '', 
+      name: '', 
+      username: '', 
+      bio: '', 
+      tags: '', 
+      songs: [],
+      comments: [],
+      loading: true,
+      error: null
     };
   }
 
+  async componentDidMount() {
+    const { playlistId } = this.props; // Get the playlistId from props
+
+    try {
+      const response = await fetch(`/api/playlists/${playlistId}`);
+      if (!response.ok) {
+        throw new Error('Error fetching playlist');
+      }
+
+      const playlist = await response.json();
+      this.setState({
+        coverart: playlist.coverart, 
+        name: playlist.name, 
+        username: playlist.created_by, // Assuming you have created_by as user object
+        bio: playlist.bio, 
+        tags: playlist.tags, 
+        songs: playlist.songs, 
+        comments: playlist.comments,
+        loading: false
+      });
+    } catch (error) {
+      this.setState({ error: error.message, loading: false });
+    }
+  }
+
   render() {
-    const { playlistCover, playlistName, creatorName, genre, description, hashtags, songs, comments } = this.state;
+    const { coverart, name, username, bio, tags, songs, comments, loading, error } = this.state;
+
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>{error}</div>;
+
     return (
-      <div className='playlist-page'>
+      <div className='playlistpage-page'>
         <Header />
-        <div className='playlist-body'>
-          <main className='playlist-section'>
-            <div className="playlist-details">
-              <img src={playlistCover} alt={playlistName} className="playlist-cover" />
-              <div className="playlist-info">
-                <h1>{playlistName}</h1>
-                <p>By {creatorName}</p>
-                <p>{genre}</p>
-                <p>{description}</p>
-                <p>{hashtags}</p>
+        <div className='playlistpage-body'>
+          <main className='playlistpage-section'>
+            <div className="playlistpage-details">
+              <img src={coverart} alt={name} className="playlistpage-cover" />
+              <div className="playlistpage-info">
+                <h1>{name}</h1>
+                <p>By {username}</p>
+                <p>{bio}</p>
+                <p>{tags}</p>
               </div>
             </div>
             <div className="song-list">
@@ -61,13 +79,13 @@ class Playlist extends Component {
             </Link>
           </main>
           <aside className='comment-section'>
-            <h3>Comments</h3>
+            <h3 className='comment-heading'>Comments</h3>
             {comments.map((comment, index) => (
               <Comment key={index} {...comment} />
             ))}
-            <div className="add-comment">
-              <input type="text" placeholder="Add comment" />
-            </div>
+            
+            <input type="text" placeholder="Add comment" className="comment-input" />
+            
           </aside>
         </div>
       </div>

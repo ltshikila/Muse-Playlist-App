@@ -1,59 +1,72 @@
 // LoginPage.jsx
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom'; 
-import './LoginPage.css'; // Add appropriate path to your CSS file
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './LoginPage.css';
 import OpusLogo from '../../public/assets/images/logo.png';
 
-class LoginPage extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      username: '',
-      password: ''
-    };
-  }
+const LoginPage = () => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
-  handleInputChange = (event) => {
+  const handleInputChange = (event) => {
     const { name, value } = event.target;
-    this.setState({ [name]: value });
+    name === 'username' ? setUsername(value) : setPassword(value);
   };
 
-  handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // Handle login logic here
+
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem('username', username);
+        navigate('/home/songs'); // Use navigate instead of history.push
+      } else {
+        alert(data.error);
+      }
+    } catch (error) {
+      alert("An error occurred. Please try again.");
+    }
   };
 
-  render() {
-    const { username, password } = this.state;
-
-    return (
-      <div className="login-page">
-        <img src={OpusLogo} alt="Opus Logo" className="opus-logo" />
-        <h2>Login</h2>
-        <form onSubmit={this.handleSubmit}>
-          <input
-            type="text"
-            name="username"
-            value={username}
-            placeholder="Username"
-            onChange={this.handleInputChange}
-            required
-          />
-          <input
-            type="password"
-            name="password"
-            value={password}
-            placeholder="Password"
-            onChange={this.handleInputChange}
-            required
-          />
-          <Link to="/home/songs">
-            <button type="submit">Login</button>
-          </Link>
-        </form>
-      </div>
-    );
-  }
-}
+  return (
+    <div className="login-page">
+      <img src={OpusLogo} alt="Opus Logo" className="opus-logo" />
+      <h2>Login</h2>
+      <form 
+        onSubmit={handleSubmit}
+        className="form"
+      >
+        <input
+          className="input"
+          type="text"
+          name="username"
+          value={username}
+          placeholder="Username"
+          onChange={handleInputChange}
+          required
+        />
+        <input
+          className="input"
+          type="password"
+          name="password"
+          value={password}
+          placeholder="Password"
+          onChange={handleInputChange}
+          required
+        />
+        <button type="submit" className="button">Login</button>
+      </form>
+    </div>
+  );
+};
 
 export default LoginPage;

@@ -1,10 +1,11 @@
-// withRouter.js
-import { useParams } from 'react-router-dom';
+import React from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 
 export const withRouter = (Component) => {
   function ComponentWithRouterProps(props) {
     const params = useParams();
-    return <Component {...props} params={params} />;
+    const navigate = useNavigate();
+    return <Component {...props} params={params} navigate={navigate} />;
   }
 
   return ComponentWithRouterProps;

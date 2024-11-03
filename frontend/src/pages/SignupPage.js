@@ -1,7 +1,7 @@
 // SignupPage.jsx
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import './SignupPage.css'; // Add appropriate path to your CSS file
+import './SignupPage.css'; 
 import OpusLogo from '../../public/assets/images/logo.png';
 
 class SignupPage extends Component {
@@ -20,13 +20,43 @@ class SignupPage extends Component {
     this.setState({ [name]: value });
   };
 
-  handleSubmit = (event) => {
+  handleSubmit = async (event) => {
     event.preventDefault();
-    // Handle signup logic here
+    
+    const { username, email, password, confirmPassword } = this.state;
+  
+    // Basic validation
+    if (password !== confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+  
+    try {
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, email, password }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        // Handle successful signup (e.g., redirect to login or home page)
+        alert(data.message);
+        this.props.history.push('/home/songs'); 
+      } else {
+        alert(data.error);
+      }
+    } catch (error) {
+      alert("An error occurred. Please try again.");
+    }
   };
+  
 
   render() {
-    const { username, email, password, confirmPassword } = this.state;
+    const { username, email, password, confirmpassword } = this.state;
 
     return (
       <div className="signup-page">
@@ -34,6 +64,7 @@ class SignupPage extends Component {
         <h2>Sign Up</h2>
         <form onSubmit={this.handleSubmit}>
           <input
+            className="input"
             type="text"
             name="username"
             value={username}
@@ -42,6 +73,7 @@ class SignupPage extends Component {
             required
           />
           <input
+            className="input"
             type="email"
             name="email"
             value={email}
@@ -50,6 +82,7 @@ class SignupPage extends Component {
             required
           />
           <input
+            className="input"
             type="password"
             name="password"
             value={password}
@@ -58,16 +91,17 @@ class SignupPage extends Component {
             required
           />
           <input
+            className="input"
             type="password"
             name="confirmPassword"
-            value={confirmPassword}
+            value={confirmpassword}
             placeholder="Confirm Password"
             onChange={this.handleInputChange}
             required
           />
-          <Link to="/home/songs">
-            <button type="submit">Sign Up</button>
-          </Link>
+          
+            <button type="submit" className="button">Sign Up</button>
+          
 
         </form>
       </div>

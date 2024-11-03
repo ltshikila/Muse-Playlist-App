@@ -1,27 +1,28 @@
-/* AddSong.css */
-.add-song-page {
-    padding: 20px;
-    text-align: center;
-    max-width: 500px;
-    margin: 50px auto;
-    background-color: rgba(0, 0, 0, 0.1);
-    border-radius: 50px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
+/* EditProfile.css */
 
-.add-song-page h2 {
-    margin-bottom: 20px;
-    color: #333;
-}
-
-.add-song-page form {
+.edit-profile-page {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-}
-
-.input {
+    padding: 20px;
+    max-width: 500px;
+    margin: auto;
+    font-family: Arial, sans-serif;
+  }
+  
+  h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .input {
     margin: 10px 0;
     padding: 12px;
     font-size: 16px;
@@ -29,7 +30,12 @@
     border-radius: 30px;
     width: 80%;
   }
-
+  
+  textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+  
   .button {
     padding: 12px;
     margin: 50px;
@@ -42,10 +48,4 @@
     width: 40%;
 
   }
-
-label {
-    text-align: left;
-    width: 80%;
-    font-size: 1rem;
-    font-weight: 400;
-}
+  

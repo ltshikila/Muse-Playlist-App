@@ -1,16 +1,15 @@
-// AddPlaylist.jsx
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom'; 
+import { withRouter } from '../utils/withRouter';
 import './AddPlaylist.css'; // Add appropriate path to your CSS file
 
 class AddPlaylist extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      playlistName: '',
-      description: '',
-      genre: '',
-      coverImage: null
+      name: '',
+      bio: '',
+      tags: '', // e.g. "#hiphop, #rap, #pop, #rock"
+      coverart: ''
     };
   }
 
@@ -19,68 +18,85 @@ class AddPlaylist extends Component {
     this.setState({ [name]: value });
   };
 
-  handleFileChange = (event) => {
-    this.setState({ coverImage: event.target.files[0] });
-  };
-
-  handleSubmit = (event) => {
+  handleSubmit = async (event) => {
     event.preventDefault();
-    // Handle add playlist logic here
+    const { name, bio, tags, coverart } = this.state;
+    const { navigate } = this.props;
+  
+    const createdBy = localStorage.getItem('username'); // Retrieve username from local storage
+  
+    try {
+      const response = await fetch('/api/playlists', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, bio, tags, coverart, created_by: createdBy }), 
+      });
+  
+      if (response.ok) {
+        const result = await response.json();
+        alert('Playlist created successfully');
+        navigate('/profile/my'); // Redirect to profile page
+      } else {
+        const errorResult = await response.json();
+        alert(errorResult.error || 'Unsuccessful creating playlist');
+      }
+    } catch (error) {
+      console.error('Network or other error:', error);
+      alert('Error creating playlist');
+    }
   };
+  
 
   render() {
-    const { playlistName, description, genre } = this.state;
+    const { name, bio, tags, coverart } = this.state;
 
     return (
       <div className="add-playlist-page">
         <h2>Add Playlist</h2>
         <form onSubmit={this.handleSubmit}>
           <input
+            className="input"
             type="text"
-            name="playlistName"
-            value={playlistName}
+            name="name"
+            value={name}
             placeholder="Playlist Name"
             onChange={this.handleInputChange}
             required
           />
           <textarea
-            name="description"
-            value={description}
-            placeholder="Description"
+            name="bio"
+            value={bio}
+            placeholder="bio"
             onChange={this.handleInputChange}
             required
           />
+          
           <input
-            type="text"
-            name="genre"
-            value={genre}
-            placeholder="Genre"
-            onChange={this.handleInputChange}
-            required
-          />
-          <input
+            className="input"
             type="text"
             name="tags"
-            value={genre}
+            value={tags}
             placeholder="Tag(s)"
             onChange={this.handleInputChange}
             required
           />
           <label>Cover art</label>
           <input
-            type="file"
-            name="coverImage"
-            onChange={this.handleFileChange}
+            className="input"
+            type="text"
+            name="coverart"
+            value={coverart}
+            placeholder="Cover Art URL"
+            onChange={this.handleInputChange}
             required
           />
-          <Link to="/profile/my">
-          <button type="submit">Add Playlist</button>
-          </Link>
-          
+          <button type="submit" className="button">Add Playlist</button>
         </form>
       </div>
     );
   }
 }
 
-export default AddPlaylist;
+export default withRouter(AddPlaylist);

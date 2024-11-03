@@ -37,6 +37,7 @@ class AddSong extends Component {
         <h2>Add Song</h2>
         <form onSubmit={this.handleSubmit}>
           <input
+            className="input"
             type="text"
             name="songName"
             value={songName}
@@ -45,6 +46,7 @@ class AddSong extends Component {
             required
           />
           <input
+            className="input"
             type="text"
             name="artist"
             value={artist}
@@ -53,6 +55,7 @@ class AddSong extends Component {
             required
           />
           <input
+            className="input"
             type="text"
             name="album"
             value={album}
@@ -61,6 +64,7 @@ class AddSong extends Component {
             required
           />
           <input
+            className="input"
             type="number"
             name="year"
             value={year}
@@ -70,14 +74,15 @@ class AddSong extends Component {
           />
           <label>Cover art</label>
           <input
-            type="file"
+            className="input"
+            type="text"
             name="coverImage"
             placeholder="Cover Art"
             onChange={this.handleFileChange}
             required
           />
           <Link to="/playlist/:playlistId">
-          <button type="submit">Add Song</button>
+          <button type="submit" className="button">Add Song</button>
           </Link>
         </form>
       </div>

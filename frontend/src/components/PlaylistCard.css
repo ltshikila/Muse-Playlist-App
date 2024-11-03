@@ -1,10 +1,27 @@
 .playlist-item {
+    display: flex;
+    flex-direction: column;
     width: 150px;
     text-align: left;
     padding-left: 10px;
 }
 
-.playlist-cover {
+.playlistcard-cover {
     width: 100%;
     height: auto;
+    border-radius: 10px;
+}
+
+.playlistpage-info{
+    font-size: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.playlistcard-name{
+    margin: 15px 10px ;
+}
+
+.playlistcard-numsongs{
+    margin: 15px 10px ;
 }

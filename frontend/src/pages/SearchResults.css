@@ -1,0 +1,29 @@
+/* SearchResults.css */
+.search-results {
+    padding: 20px;
+}
+
+.search-results h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.users-section,
+.songs-section,
+.playlists-section {
+    margin-bottom: 30px;
+}
+
+.user-item,
+.song {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.user-item img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+}

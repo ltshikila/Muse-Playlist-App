@@ -3,10 +3,13 @@ import React from 'react';
 import './splashpage.css'; // Import your CSS file
 import OpusLogo from '../../public/assets/images/logo.png'; // Make sure to replace with the actual path to your logo image
 import { Link } from 'react-router-dom'; 
+//import splashgirl from '../../public/assets/images/splashgirl.png';
 
 const SplashPage = () => {
     return (
         <div className="splash-container">
+            
+
             <header className="splash-header">
                 <img src={OpusLogo} alt="Opus Logo" className="opus-logo" />
                 <Link to="login" className="signin-link">SIGN IN</Link>
@@ -22,6 +25,7 @@ const SplashPage = () => {
             <Link to="/signup">
             <button className="get-started-btn">Get Started</button>
             </Link>
+            
         </div>
     );
 };

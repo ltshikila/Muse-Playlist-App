@@ -1,7 +1,14 @@
+// Song.jsx
 import React, { Component } from 'react';
 import './Song.css';
-import saveicon from '../../public/assets/images/bookmark.png'
+import deleteicon from '../../public/assets/images/trash.png';
+
 class Song extends Component {
+  handleDelete = () => {
+    const { _id, onDelete } = this.props; // Get song ID and delete handler from props
+    onDelete(_id); // Call the delete function passed from the parent
+  };
+
   render() {
     const {
       coverImage,
@@ -12,7 +19,6 @@ class Song extends Component {
       addedBy,
       length,
       dateAdded,
-      save = saveicon,
     } = this.props;
 
     return (
@@ -29,8 +35,8 @@ class Song extends Component {
         <div className="song-added-by">{addedBy}</div>
         <div className="song-length">{length}</div>
         <div className="song-date-added">{dateAdded}</div>
-        <div className="song-save">
-          <img src={save} alt="Save icon" />
+        <div className="song-delete" onClick={this.handleDelete}>
+          <img src={deleteicon} alt="delete icon" />
         </div>
       </div>
     );

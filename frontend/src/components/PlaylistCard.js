@@ -1,25 +1,30 @@
 import React, { Component } from 'react';
-//import defaultCover from '../../public/assets/images/defaultCover.png';
-import './PlaylistCard.css'
+import { withRouter } from '../utils/withRouter';
+import './PlaylistCard.css';
 
 class PlaylistCard extends Component {
+  handleClick = () => {
+    const { playlistId, navigate } = this.props;
+    navigate(`/playlist/${playlistId}`);
+  };
+
   render() {
     const { playlistCover, playlistName, numSongs } = this.props;
 
     return (
-      <div className="playlist-item">
+      <div className="playlist-item" onClick={this.handleClick}>
         <img 
           src={playlistCover} 
           alt={playlistName} 
-          className="playlist-cover" 
+          className="playlistcard-cover" 
         />
-        <div className="playlist-info">
-          <h4>{playlistName}</h4>
-          <p>{numSongs} songs</p>
+        <div className="playlistcard-info">
+          <h4 className="playlistcard-name">{playlistName}</h4>
+          <p className="playlistcard-numsongs">{numSongs} songs</p>
         </div>
       </div>
     );
   }
 }
 
-export default PlaylistCard;
+export default withRouter(PlaylistCard); // Wrap PlaylistCard with withRouter

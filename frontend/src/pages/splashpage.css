@@ -3,6 +3,13 @@ body {
     margin: 0;
     padding: 0;
     overflow-x: hidden;
+    background: 
+        url('../../public/assets/images/splashgirl.png'),
+        linear-gradient(144.59deg, rgba(255, 255, 255, 0.2), rgba(47, 0, 234, 0.2)),
+        linear-gradient(144.54deg, rgba(255, 255, 255, 0.2), rgba(0, 249, 234, 0.2)),
+        linear-gradient(245.26deg, #fff, #8f00ff);
+
+        height: 100vh;
 }
 
 
@@ -10,26 +17,29 @@ body {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    height: 100vh;
+    
     padding-left: 3rem;
     padding-right: 3rem;
     color: #ffffff;
-    background-image: linear-gradient(90deg, #5f5f5f, #c0c0c0);
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: right center;
-    /* Adjusts position of the gradient and image */
+
+        
+
+    background-size: cover, cover, cover, cover;
+    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
+    background-position: center center, right center, right center, right center;
 }
+
+
 
 .splash-header {
     width: 100%;
     display: flex;
     justify-content: space-between;
-    align-items:start;
+    align-items: start;
 }
 
 .opus-logo {
-    height:12rem;
+    height: 12rem;
 }
 
 .signin-link {
@@ -45,7 +55,7 @@ body {
     font-size: 8rem;
     color: #ffffff;
     margin: 1.75rem .5rem;
-    
+
 }
 
 .splash-text p {
@@ -61,7 +71,7 @@ body {
 .get-started-btn {
     position: absolute;
     top: 85vh;
-    left:42vw;
+    left: 42vw;
     font-family: 'Poppins', sans-serif;
     font-weight: 300;
     background-color: #000000;

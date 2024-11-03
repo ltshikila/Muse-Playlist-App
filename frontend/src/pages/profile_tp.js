@@ -1,4 +1,3 @@
-// ProfilePageTP.jsx
 import React, { Component } from 'react';
 import { withRouter } from '../utils/withRouter';
 import PlaylistCard from '../components/PlaylistCard';
@@ -8,23 +7,65 @@ import './profile.css';
 import instagram from '../../public/assets/images/Instagramicon.png';
 import spotify from '../../public/assets/images/Spotifyicon.png';
 import twitter from '../../public/assets/images/TwitterXicon.png';
-import pfp from '../../public/assets/images/pfptwo.jpg'
+
 class ProfilePageTP extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isFriend: false,  // Initialize the state to track friendship status
+    };
+  }
+
+  componentDidMount() {
+    const { friends } = this.props;
+    const { username } = this.props.params;
+
+    // Check if the user is already a friend
+    const isFriend = friends.some(friend => friend.user === username && friend.accepted);
+    this.setState({ isFriend });
+  }
+
+  handleFriendRequest = async () => {
+    const { username } = this.props.params;
+    const currentUser = this.props.loggedInUser;
+
+    try {
+      if (this.state.isFriend) {
+        // Unfriend logic
+        await fetch("/api/users/unfriend", {
+          method: "DELETE",
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: currentUser, friendUsername: username }),
+        });
+        this.setState({ isFriend: false });
+      } else {
+        // Add friend logic
+        await fetch("/api/users/friend", {
+          method: "POST",
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: currentUser, friendUsername: username }),
+        });
+        this.setState({ isFriend: true });
+      }
+    } catch (error) {
+      console.error("Error handling friend request:", error);
+    }
+  };
+
   render() {
-    const { username } = this.props.params; // Access dynamic parameter
+    const { username } = this.props.params; 
     const {
       profileImage,
-      caption,
+      bio,
       friends,
       playlists,
-      saves,
+      saved_playlists,
       name,
       surname,
-      instagramLink,
-      twitterLink,
-      spotifyLink,
-      createdPlaylists,
+      socialmedia,
+      owned_playlists,
     } = this.props;
+    const { isFriend } = this.state;
 
     return (
       <div className='profile-page'>
@@ -32,26 +73,28 @@ class ProfilePageTP extends Component {
         <div className='profile-main'>
           <div className='profile-info'>
             <img src={profileImage || defaultProfileImage} alt={name} className='profile-image' />
-            <h2>{`${name} (${username})`}</h2> {/* Display Username */}
-            <p>{caption}</p>
+            <h2>{`${username}`}</h2>
+            <p>{bio}</p>
             <div className='profile-stats'>
-              <span>{friends} Friends</span>
+              <span>{friends.length} Friends</span>
               <span>{playlists} Playlists</span>
-              <span>{saves} Saves</span>
+              <span>{saved_playlists} Saves</span>
             </div>
-            <button className='friend-request-btn'>Friend Request</button>
+            <button className='friend-request-btn' onClick={this.handleFriendRequest}>
+              {isFriend ? "Unfriend" : "Add Friend"}
+            </button>
             <div className='profile-details'>
               <p><strong>Name:</strong> {name}</p>
               <p><strong>Surname:</strong> {surname}</p>
             </div>
             <div className='social-links'>
-              <a href={instagramLink} target='_blank' rel='noopener noreferrer'>
+              <a href={socialmedia.instagramLink} target='_blank' rel='noopener noreferrer'>
                 <img src={instagram} className='socialmedia' alt="instagram" />
               </a>
-              <a href={twitterLink} target='_blank' rel='noopener noreferrer'>
+              <a href={socialmedia.twitterLink} target='_blank' rel='noopener noreferrer'>
                 <img src={twitter} className='socialmedia' alt="twitter" />
               </a>
-              <a href={spotifyLink} target='_blank' rel='noopener noreferrer'>
+              <a href={socialmedia.spotifyLink} target='_blank' rel='noopener noreferrer'>
                 <img src={spotify} className='socialmedia' alt="spotify" />
               </a>
             </div>
@@ -62,12 +105,12 @@ class ProfilePageTP extends Component {
               <h3>Created Playlists</h3>
             </div>
             <div className='playlists-list'>
-              {createdPlaylists.map((playlist, index) => (
+              {owned_playlists.map((playlist, index) => (
                 <PlaylistCard
                   key={index}
-                  playlistCover={playlist.playlistCover}
-                  playlistName={playlist.playlistName}
-                  numSongs={playlist.numSongs}
+                  playlistCover={playlist.coverart}
+                  playlistName={playlist.name}
+                  numSongs={playlist.songs.length}
                 />
               ))}
             </div>

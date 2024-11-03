@@ -7,6 +7,7 @@
   background-color: rgba(0, 0, 0, 0.1);
   border-radius: 50px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  height: 84vh;
 }
 
 .signup-page h2 {
@@ -21,7 +22,7 @@
   align-items: center;
 }
 
-.signup-page input {
+.input {
   margin: 10px 0;
   padding: 12px;
   font-size: 16px;
@@ -30,7 +31,7 @@
   width: 80%;
 }
 
-.signup-page button {
+.button {
   padding: 12px;
   margin: 50px;
   font-size: 1.5rem;
@@ -39,7 +40,8 @@
   border: none;
   border-radius: 50px;
   cursor: pointer;
-  width: 100%;
+  width: 40%;
+
 }
 
 .signup-page button:hover {

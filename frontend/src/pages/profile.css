@@ -1,6 +1,5 @@
 .profile-page {
-    padding: 20px;
-    background: linear-gradient(to right, #5f5f5f, #c0c0c0);
+    margin: 0px 20px;
     /* Use your desired background color */
     color: white;
     height: 100vh;
@@ -34,14 +33,22 @@
 .profile-info {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1.25rem;
     margin-left: 20px;
-
+    justify-content: center;
 }
 
 .username {
     font-size: 24px;
     font-weight: bold;
+    color: white;
+}
+
+.profile-username{
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    margin: 10px 0px;
 }
 
 .caption {
@@ -72,8 +79,8 @@
     padding: 1.25rem 1.5rem;
     border: none;
     cursor: pointer;
-    border-radius: 20px;
-    width: 30%;
+    border-radius: 50px;
+    width: 60%;
 }
 .created-playlists {
     margin-top: 20px;
@@ -93,7 +100,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
-    width: 50%;
+    /* width: 50%; */
     padding: 0.5rem 1rem;
     background-color: rgba(0, 0, 0, 0.4);
     border-radius: 40px;
