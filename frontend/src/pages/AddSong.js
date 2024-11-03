@@ -1,7 +1,6 @@
-// AddSong.jsx
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom'; 
-import './AddSong.css'; 
+import { withRouter } from '../utils/withRouter'; // Import withRouter
+import './AddSong.css';
 
 class AddSong extends Component {
   constructor(props) {
@@ -11,7 +10,8 @@ class AddSong extends Component {
       artist: '',
       album: '',
       year: '',
-      coverImage: null
+      length: '',
+      coverImage: '' // Ensure coverImage is initialized in state
     };
   }
 
@@ -20,74 +20,109 @@ class AddSong extends Component {
     this.setState({ [name]: value });
   };
 
-  handleFileChange = (event) => {
-    this.setState({ coverImage: event.target.files[0] });
-  };
-
-  handleSubmit = (event) => {
+  handleSubmit = async (event) => {
     event.preventDefault();
-    // Handle add song logic here
+    const { songName, artist, album, year, length, coverImage } = this.state;
+  
+    const createdBy = localStorage.getItem('username');
+  
+    const songData = {
+      name: songName,
+      artist,
+      album,
+      year,
+      length,
+      uploaded_by: createdBy,
+      coverart: coverImage
+    };
+  
+    try {
+      // Now, add the song and associate it with the playlist in one call
+      const playlistId = this.props.params.playlistId;
+  
+      const response = await fetch(`/api/playlists/${playlistId}/songs`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(songData)
+      });
+  
+      if (response.ok) {
+        // Redirect to the playlist page if the operation was successful
+        this.props.navigate(`/playlist/${playlistId}`);
+      } else {
+        console.error('Error adding song to the songs collection and playlist.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
   render() {
-    const { songName, artist, album, year } = this.state;
+    const { songName, artist, album, year, length, coverImage } = this.state;
 
     return (
       <div className="add-song-page">
         <h2>Add Song</h2>
         <form onSubmit={this.handleSubmit}>
+          <label className='label'>Song Name</label>
           <input
             className="input"
             type="text"
             name="songName"
             value={songName}
-            placeholder="Song Name"
             onChange={this.handleInputChange}
             required
           />
+          <label className='label'>Artist</label>
           <input
             className="input"
             type="text"
             name="artist"
             value={artist}
-            placeholder="Artist"
             onChange={this.handleInputChange}
             required
           />
+          <label className='label'>Album</label>
           <input
             className="input"
             type="text"
             name="album"
             value={album}
-            placeholder="Album"
             onChange={this.handleInputChange}
             required
           />
+          <label className='label'>Year</label>
           <input
             className="input"
             type="number"
             name="year"
             value={year}
-            placeholder="Year"
             onChange={this.handleInputChange}
             required
           />
-          <label>Cover art</label>
+          <label className='label'>Length</label>
+          <input
+            className="input"
+            type="text"
+            name="length"
+            value={length}
+            onChange={this.handleInputChange}
+            required
+          />
+          <label className='label'>Cover art</label>
           <input
             className="input"
             type="text"
             name="coverImage"
-            placeholder="Cover Art"
-            onChange={this.handleFileChange}
+            value={coverImage}
+            onChange={this.handleInputChange}
             required
           />
-          <Link to="/playlist/:playlistId">
-          <button type="submit" className="button">Add Song</button>
-          </Link>
+          <button type="submit" className="songsubmitbtn">Add Song</button>
         </form>
       </div>
     );
   }
 }
 
-export default AddSong;
+export default withRouter(AddSong);

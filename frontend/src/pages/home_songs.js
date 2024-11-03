@@ -1,4 +1,3 @@
-// SongsPage.jsx
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'; 
 import './home_songs.css';
@@ -11,7 +10,10 @@ const SongsPage = () => {
     // Fetch songs data from the API
     const fetchSongs = async () => {
         try {
-            const response = await fetch('/api/songs'); // Update this API path accordingly
+            const response = await fetch('/api/songs'); // Ensure this path is correct
+            if (!response.ok) {
+                throw new Error('Failed to fetch songs');
+            }
             const data = await response.json();
             setSongs(data);
         } catch (error) {

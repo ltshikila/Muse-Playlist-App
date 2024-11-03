@@ -28,31 +28,31 @@ function connectDB() {
   return _connectDB.apply(this, arguments);
 } // Middleware to connect to the database
 function _connectDB() {
-  _connectDB = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee22() {
+  _connectDB = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee23() {
     var db;
-    return _regeneratorRuntime().wrap(function _callee22$(_context22) {
-      while (1) switch (_context22.prev = _context22.next) {
+    return _regeneratorRuntime().wrap(function _callee23$(_context23) {
+      while (1) switch (_context23.prev = _context23.next) {
         case 0:
-          _context22.prev = 0;
-          _context22.next = 3;
+          _context23.prev = 0;
+          _context23.next = 3;
           return client.connect();
         case 3:
           db = client.db("muse");
-          return _context22.abrupt("return", {
+          return _context23.abrupt("return", {
             users: db.collection("users"),
             songs: db.collection("songs"),
             playlists: db.collection("playlists")
           });
         case 7:
-          _context22.prev = 7;
-          _context22.t0 = _context22["catch"](0);
-          console.error(_context22.t0);
-          return _context22.abrupt("return", null);
+          _context23.prev = 7;
+          _context23.t0 = _context23["catch"](0);
+          console.error(_context23.t0);
+          return _context23.abrupt("return", null);
         case 11:
         case "end":
-          return _context22.stop();
+          return _context23.stop();
       }
-    }, _callee22, null, [[0, 7]]);
+    }, _callee23, null, [[0, 7]]);
   }));
   return _connectDB.apply(this, arguments);
 }
@@ -582,10 +582,10 @@ app.get("/api/playlists", /*#__PURE__*/function () {
   };
 }());
 
-// Add Songs to Songs Collection:
+// Add song to the Songs collection %
 app.post("/api/songs", /*#__PURE__*/function () {
   var _ref14 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee13(req, res) {
-    var _req$body6, name, artist, album, year, length, uploaded_by, coverart;
+    var _req$body6, name, artist, album, year, length, uploaded_by, coverart, result;
     return _regeneratorRuntime().wrap(function _callee13$(_context13) {
       while (1) switch (_context13.prev = _context13.next) {
         case 0:
@@ -603,22 +603,24 @@ app.post("/api/songs", /*#__PURE__*/function () {
             upload_date: new Date()
           });
         case 4:
+          result = _context13.sent;
           res.json({
+            _id: result.insertedId,
             message: "Song added successfully"
           });
-          _context13.next = 10;
+          _context13.next = 11;
           break;
-        case 7:
-          _context13.prev = 7;
+        case 8:
+          _context13.prev = 8;
           _context13.t0 = _context13["catch"](1);
           res.status(500).json({
             error: "Error adding song"
           });
-        case 10:
+        case 11:
         case "end":
           return _context13.stop();
       }
-    }, _callee13, null, [[1, 7]]);
+    }, _callee13, null, [[1, 8]]);
   }));
   return function (_x26, _x27) {
     return _ref14.apply(this, arguments);
@@ -727,57 +729,127 @@ app.get("/api/playlists/:id", /*#__PURE__*/function () {
   };
 }());
 
-// Add a song to a playlist
+// Add a song and also add it to the specified playlist
 app.post("/api/playlists/:playlistId/songs", /*#__PURE__*/function () {
   var _ref17 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee16(req, res) {
-    var playlistId, songId;
+    var playlistId, _req$body8, name, artist, album, year, length, uploaded_by, coverart, songResult, songId;
     return _regeneratorRuntime().wrap(function _callee16$(_context16) {
       while (1) switch (_context16.prev = _context16.next) {
         case 0:
           playlistId = req.params.playlistId;
-          songId = req.body.songId;
+          _req$body8 = req.body, name = _req$body8.name, artist = _req$body8.artist, album = _req$body8.album, year = _req$body8.year, length = _req$body8.length, uploaded_by = _req$body8.uploaded_by, coverart = _req$body8.coverart;
           _context16.prev = 2;
           _context16.next = 5;
+          return req.db.songs.insertOne({
+            name: name,
+            artist: artist,
+            album: album,
+            year: year,
+            length: length,
+            uploaded_by: uploaded_by,
+            coverart: coverart,
+            upload_date: new Date()
+          });
+        case 5:
+          songResult = _context16.sent;
+          songId = songResult.insertedId; // Get the new song ID
+          // Now, add the song ID to the playlist's songs array
+          _context16.next = 9;
           return req.db.playlists.updateOne({
-            _id: ObjectId(playlistId)
+            _id: new ObjectId(playlistId)
           }, {
             $push: {
               songs: songId
             }
           });
-        case 5:
+        case 9:
           res.json({
-            message: "Song added to playlist"
+            message: "Song added successfully to both songs collection and playlist",
+            songId: songId
           });
-          _context16.next = 11;
+          _context16.next = 15;
           break;
-        case 8:
-          _context16.prev = 8;
+        case 12:
+          _context16.prev = 12;
           _context16.t0 = _context16["catch"](2);
           res.status(500).json({
             error: "Error adding song to playlist"
           });
-        case 11:
+        case 15:
         case "end":
           return _context16.stop();
       }
-    }, _callee16, null, [[2, 8]]);
+    }, _callee16, null, [[2, 12]]);
   }));
   return function (_x32, _x33) {
     return _ref17.apply(this, arguments);
   };
 }());
 
-// Delete a song
-app["delete"]("/api/songs/:songId", /*#__PURE__*/function () {
+// get song details by song object ID
+// get song details by song object ID
+app.get('/api/songs/:id', /*#__PURE__*/function () {
   var _ref18 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee17(req, res) {
-    var songId;
+    var id, song;
     return _regeneratorRuntime().wrap(function _callee17$(_context17) {
       while (1) switch (_context17.prev = _context17.next) {
         case 0:
-          songId = req.params.songId;
+          id = req.params.id; // Get the song ID from the request parameters
           _context17.prev = 1;
-          _context17.next = 4;
+          if (ObjectId.isValid(id)) {
+            _context17.next = 4;
+            break;
+          }
+          return _context17.abrupt("return", res.status(400).json({
+            error: 'Invalid song ID'
+          }));
+        case 4:
+          _context17.next = 6;
+          return req.db.songs.findOne({
+            _id: new ObjectId(id)
+          });
+        case 6:
+          song = _context17.sent;
+          if (song) {
+            _context17.next = 9;
+            break;
+          }
+          return _context17.abrupt("return", res.status(404).json({
+            error: 'Song not found'
+          }));
+        case 9:
+          // Return the song data
+          res.json(song);
+          _context17.next = 16;
+          break;
+        case 12:
+          _context17.prev = 12;
+          _context17.t0 = _context17["catch"](1);
+          console.error(_context17.t0);
+          res.status(500).json({
+            error: 'Error fetching song data'
+          });
+        case 16:
+        case "end":
+          return _context17.stop();
+      }
+    }, _callee17, null, [[1, 12]]);
+  }));
+  return function (_x34, _x35) {
+    return _ref18.apply(this, arguments);
+  };
+}());
+
+// Delete a song
+app["delete"]("/api/songs/:songId", /*#__PURE__*/function () {
+  var _ref19 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee18(req, res) {
+    var songId;
+    return _regeneratorRuntime().wrap(function _callee18$(_context18) {
+      while (1) switch (_context18.prev = _context18.next) {
+        case 0:
+          songId = req.params.songId;
+          _context18.prev = 1;
+          _context18.next = 4;
           return req.db.songs.deleteOne({
             _id: ObjectId(songId)
           });
@@ -785,49 +857,13 @@ app["delete"]("/api/songs/:songId", /*#__PURE__*/function () {
           res.json({
             message: "Song deleted successfully"
           });
-          _context17.next = 10;
-          break;
-        case 7:
-          _context17.prev = 7;
-          _context17.t0 = _context17["catch"](1);
-          res.status(500).json({
-            error: "Error deleting song"
-          });
-        case 10:
-        case "end":
-          return _context17.stop();
-      }
-    }, _callee17, null, [[1, 7]]);
-  }));
-  return function (_x34, _x35) {
-    return _ref18.apply(this, arguments);
-  };
-}());
-
-// Delete a playlist
-app["delete"]("/api/playlists/:playlistId", /*#__PURE__*/function () {
-  var _ref19 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee18(req, res) {
-    var playlistId;
-    return _regeneratorRuntime().wrap(function _callee18$(_context18) {
-      while (1) switch (_context18.prev = _context18.next) {
-        case 0:
-          playlistId = req.params.playlistId;
-          _context18.prev = 1;
-          _context18.next = 4;
-          return req.db.playlists.deleteOne({
-            _id: ObjectId(playlistId)
-          });
-        case 4:
-          res.json({
-            message: "Playlist deleted successfully"
-          });
           _context18.next = 10;
           break;
         case 7:
           _context18.prev = 7;
           _context18.t0 = _context18["catch"](1);
           res.status(500).json({
-            error: "Error deleting playlist"
+            error: "Error deleting song"
           });
         case 10:
         case "end":
@@ -840,64 +876,67 @@ app["delete"]("/api/playlists/:playlistId", /*#__PURE__*/function () {
   };
 }());
 
-// Search Routes
-
-// Search for playlists (by name or tags)
-app.get("/api/playlists/search", /*#__PURE__*/function () {
+// Delete a playlist
+app["delete"]("/api/playlists/:playlistId", /*#__PURE__*/function () {
   var _ref20 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee19(req, res) {
-    var query, playlists;
+    var playlistId;
     return _regeneratorRuntime().wrap(function _callee19$(_context19) {
       while (1) switch (_context19.prev = _context19.next) {
         case 0:
-          query = req.query.query;
+          playlistId = req.params.playlistId;
           _context19.prev = 1;
           _context19.next = 4;
-          return req.db.playlists.find({
-            $or: [buildFuzzyQuery("name", query), buildFuzzyQuery("tags", query)]
-          }).toArray();
+          return req.db.playlists.deleteOne({
+            _id: ObjectId(playlistId)
+          });
         case 4:
-          playlists = _context19.sent;
-          res.json(playlists);
-          _context19.next = 11;
+          res.json({
+            message: "Playlist deleted successfully"
+          });
+          _context19.next = 10;
           break;
-        case 8:
-          _context19.prev = 8;
+        case 7:
+          _context19.prev = 7;
           _context19.t0 = _context19["catch"](1);
           res.status(500).json({
-            error: "Error searching playlists"
+            error: "Error deleting playlist"
           });
-        case 11:
+        case 10:
         case "end":
           return _context19.stop();
       }
-    }, _callee19, null, [[1, 8]]);
+    }, _callee19, null, [[1, 7]]);
   }));
   return function (_x38, _x39) {
     return _ref20.apply(this, arguments);
   };
 }());
 
-// Search for songs (by name)
-app.get("/api/songs/search", /*#__PURE__*/function () {
+// Search Routes
+
+// Search for playlists (by name or tags)
+app.get("/api/playlists/search", /*#__PURE__*/function () {
   var _ref21 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee20(req, res) {
-    var query, songs;
+    var query, playlists;
     return _regeneratorRuntime().wrap(function _callee20$(_context20) {
       while (1) switch (_context20.prev = _context20.next) {
         case 0:
           query = req.query.query;
           _context20.prev = 1;
           _context20.next = 4;
-          return req.db.songs.find(buildFuzzyQuery("name", query)).toArray();
+          return req.db.playlists.find({
+            $or: [buildFuzzyQuery("name", query), buildFuzzyQuery("tags", query)]
+          }).toArray();
         case 4:
-          songs = _context20.sent;
-          res.json(songs);
+          playlists = _context20.sent;
+          res.json(playlists);
           _context20.next = 11;
           break;
         case 8:
           _context20.prev = 8;
           _context20.t0 = _context20["catch"](1);
           res.status(500).json({
-            error: "Error searching songs"
+            error: "Error searching playlists"
           });
         case 11:
         case "end":
@@ -910,27 +949,27 @@ app.get("/api/songs/search", /*#__PURE__*/function () {
   };
 }());
 
-// Search for users (by username)
-app.get("/api/users/search", /*#__PURE__*/function () {
+// Search for songs (by name)
+app.get("/api/songs/search", /*#__PURE__*/function () {
   var _ref22 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee21(req, res) {
-    var query, users;
+    var query, songs;
     return _regeneratorRuntime().wrap(function _callee21$(_context21) {
       while (1) switch (_context21.prev = _context21.next) {
         case 0:
           query = req.query.query;
           _context21.prev = 1;
           _context21.next = 4;
-          return req.db.users.find(buildFuzzyQuery("username", query)).toArray();
+          return req.db.songs.find(buildFuzzyQuery("name", query)).toArray();
         case 4:
-          users = _context21.sent;
-          res.json(users);
+          songs = _context21.sent;
+          res.json(songs);
           _context21.next = 11;
           break;
         case 8:
           _context21.prev = 8;
           _context21.t0 = _context21["catch"](1);
           res.status(500).json({
-            error: "Error searching users"
+            error: "Error searching songs"
           });
         case 11:
         case "end":
@@ -940,6 +979,39 @@ app.get("/api/users/search", /*#__PURE__*/function () {
   }));
   return function (_x42, _x43) {
     return _ref22.apply(this, arguments);
+  };
+}());
+
+// Search for users (by username)
+app.get("/api/users/search", /*#__PURE__*/function () {
+  var _ref23 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee22(req, res) {
+    var query, users;
+    return _regeneratorRuntime().wrap(function _callee22$(_context22) {
+      while (1) switch (_context22.prev = _context22.next) {
+        case 0:
+          query = req.query.query;
+          _context22.prev = 1;
+          _context22.next = 4;
+          return req.db.users.find(buildFuzzyQuery("username", query)).toArray();
+        case 4:
+          users = _context22.sent;
+          res.json(users);
+          _context22.next = 11;
+          break;
+        case 8:
+          _context22.prev = 8;
+          _context22.t0 = _context22["catch"](1);
+          res.status(500).json({
+            error: "Error searching users"
+          });
+        case 11:
+        case "end":
+          return _context22.stop();
+      }
+    }, _callee22, null, [[1, 8]]);
+  }));
+  return function (_x44, _x45) {
+    return _ref23.apply(this, arguments);
   };
 }());
 

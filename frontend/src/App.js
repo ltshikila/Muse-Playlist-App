@@ -29,7 +29,7 @@ class App extends Component {
       { path: '/playlist/:playlistId', element: <Playlist /> }, // Dynamic routing for playlists
       { path: '/login', element: <LoginPage /> },
       { path: '/signup', element: <SignupPage /> },
-      { path: '/add-song', element: <AddSong /> },
+      { path: '/add-song/:playlistId', element: <AddSong /> }, // Dynamic routing for adding songs to a specific playlist
       { path: '/add-playlist', element: <AddPlaylist /> },
       { path: '/search', element: <SearchResults /> },
     ]);

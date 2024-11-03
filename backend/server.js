@@ -196,17 +196,20 @@ app.get("/api/playlists", async (req, res) => {
   }
 });
 
-
-// Add Songs to Songs Collection:
+// Add song to the Songs collection %
 app.post("/api/songs", async (req, res) => {
   const { name, artist, album, year, length, uploaded_by, coverart } = req.body;
   try {
-    await req.db.songs.insertOne({ name, artist, album, year, length, uploaded_by, coverart, upload_date: new Date() });
-    res.json({ message: "Song added successfully" });
+    const result = await req.db.songs.insertOne({
+      name, artist, album, year, length, uploaded_by, coverart, upload_date: new Date()
+    });
+
+    res.json({ _id: result.insertedId, message: "Song added successfully" });
   } catch (error) {
     res.status(500).json({ error: "Error adding song" });
   }
 });
+
 
 
 
@@ -260,17 +263,59 @@ app.get("/api/playlists/:id", async (req, res) => {
 });
 
 
-// Add a song to a playlist
+// Add a song and also add it to the specified playlist
 app.post("/api/playlists/:playlistId/songs", async (req, res) => {
   const { playlistId } = req.params;
-  const { songId } = req.body;
+  const { name, artist, album, year, length, uploaded_by, coverart } = req.body;
+
   try {
-    await req.db.playlists.updateOne({ _id: ObjectId(playlistId) }, { $push: { songs: songId } });
-    res.json({ message: "Song added to playlist" });
+    // First, add the song to the songs collection
+    const songResult = await req.db.songs.insertOne({
+      name, artist, album, year, length, uploaded_by, coverart, upload_date: new Date()
+    });
+    const songId = songResult.insertedId; // Get the new song ID
+
+    // Now, add the song ID to the playlist's songs array
+    await req.db.playlists.updateOne(
+      { _id: new ObjectId(playlistId) },
+      { $push: { songs: songId } }
+    );
+
+    res.json({ message: "Song added successfully to both songs collection and playlist", songId });
   } catch (error) {
     res.status(500).json({ error: "Error adding song to playlist" });
   }
 });
+
+// get song details by song object ID
+// get song details by song object ID
+app.get('/api/songs/:id', async (req, res) => {
+  const { id } = req.params; // Get the song ID from the request parameters
+
+  try {
+    // Validate the ObjectId
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).json({ error: 'Invalid song ID' });
+    }
+
+    // Fetch the song from the database
+    const song = await req.db.songs.findOne({ _id: new ObjectId(id) }); // Use 'new ObjectId(id)'
+
+    // Check if the song exists
+    if (!song) {
+      return res.status(404).json({ error: 'Song not found' });
+    }
+
+    // Return the song data
+    res.json(song);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error fetching song data' });
+  }
+});
+
+
+
 
 // Delete a song
 app.delete("/api/songs/:songId", async (req, res) => {

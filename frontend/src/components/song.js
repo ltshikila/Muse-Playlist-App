@@ -1,6 +1,5 @@
-// Song.jsx
 import React, { Component } from 'react';
-import './Song.css';
+import './song.css';
 import deleteicon from '../../public/assets/images/trash.png';
 
 class Song extends Component {
@@ -11,20 +10,20 @@ class Song extends Component {
 
   render() {
     const {
-      coverImage,
-      songName,
+      coverart, // Adjusted based on expected prop name
+      name: songName,
       artist,
       album,
       year,
-      addedBy,
+      uploaded_by: addedBy, // Adjusted to match the expected prop name
       length,
-      dateAdded,
+      upload_date: dateAdded, // Adjusted to match the expected prop name
     } = this.props;
 
     return (
       <div className="song">
         <div className="song-cover">
-          <img src={coverImage} alt={`${songName} cover`} />
+          <img src={coverart} alt={`${songName} cover`} />
         </div>
         <div className="song-info">
           <div className="song-name">{songName}</div>
@@ -34,7 +33,7 @@ class Song extends Component {
         <div className="song-year">{year}</div>
         <div className="song-added-by">{addedBy}</div>
         <div className="song-length">{length}</div>
-        <div className="song-date-added">{dateAdded}</div>
+        <div className="song-date-added">{new Date(dateAdded).toLocaleDateString()}</div>
         <div className="song-delete" onClick={this.handleDelete}>
           <img src={deleteicon} alt="delete icon" />
         </div>
