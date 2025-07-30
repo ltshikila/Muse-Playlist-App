@@ -18,4 +18,5 @@ RUN npm install
 EXPOSE 3000
 
 # Command to run the application
-CMD ["npm", "start"]  # Adjust based on how your frontend app is started
+CMD ["npm", "start"]  
+# Adjust based on how your frontend app is started
