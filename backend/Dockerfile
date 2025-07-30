@@ -18,4 +18,4 @@ RUN npm install
 EXPOSE 3001
 
 # Command to run the application
-CMD ["node", "server.js"]
+CMD ["node", "backend/dist/server.js"]
